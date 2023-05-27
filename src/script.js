@@ -94,7 +94,7 @@ function makeHole(event) {
         const holeGeometry = new THREE.CylinderGeometry(
           0.2,
           0.2,
-          holeHeight / 9,
+          holeHeight,
           32
         );
         const holeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });

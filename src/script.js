@@ -1,4 +1,3 @@
-import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import * as dat from "lil-gui";
 
@@ -31,7 +30,7 @@ const materials = {
  */
 const cubeGeometry = new THREE.BoxGeometry(3, 0.1, 1.5);
 
-const cube = new THREE.Mesh(cubeGeometry, materials.wood);
+let cube = new THREE.Mesh(cubeGeometry, materials.wood);
 
 scene.add(cube);
 
@@ -108,7 +107,25 @@ function makeHole(event) {
         // Align the hole with the cube's orientation
         hole.quaternion.copy(cube.quaternion);
 
-        scene.add(hole);
+        // Create a ThreeBSP object from the cube and hole meshes
+        const cubeBSP = new ThreeBSP(cube);
+        const holeBSP = new ThreeBSP(hole);
+
+        // Subtract the hole from the cube using ThreeBSP
+        const subtractBSP = cubeBSP.subtract(holeBSP);
+
+        // Convert the result back to THREE.Geometry
+        const resultGeometry = subtractBSP.toGeometry();
+
+        // Remove the previous cube from the scene
+        scene.remove(cube);
+
+        // Create a new cube mesh with the updated geometry and the selected material
+        cube = new THREE.Mesh(resultGeometry, materials[guiControls.texture]);
+
+        // Add the new cube to the scene
+        scene.add(cube);
+
         break;
       }
     }
